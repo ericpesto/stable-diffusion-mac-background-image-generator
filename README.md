@@ -1,4 +1,4 @@
-# Stabe Diffusion Mac Background Image Generator
+# Stable Diffusion Mac Background Image Generator
 Run a local instance of stable diffusion on your Mac that automatically creates and sets its own desktop background.
 
 ## Setup:
