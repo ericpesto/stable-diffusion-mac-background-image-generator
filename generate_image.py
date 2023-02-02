@@ -49,7 +49,7 @@ def generate_image(prompt):
     image_width = 1024
 
     print('Step 2: generating image... ⏳')
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True)
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True, cache_dir=os.getenv("cache_dir", "./models"))
     pipe = pipe.to(get_device())
     pipe.enable_attention_slicing()
     # ? kwargs not reached
