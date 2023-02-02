@@ -18,6 +18,14 @@ from appscript import app, mactypes
 # run from cli w/ a cmd?
 # try a different upscaling model
 
+def get_device():
+    if(torch.cuda.is_available()):
+        return "cuda"
+    elif(torch.backends.mps.is_available()):
+        return "mps"
+    else:
+        return "cpu"
+
 def generate_prompt():
     print('Step 1: generating image prompt... ⏳')
     generator = pipeline('text-generation', model="mrm8488/bloom-560m-finetuned-sd-prompts")
@@ -33,14 +41,6 @@ def generate_prompt():
     print("")
     return prompt
 
-def get_device():
-    if(torch.cuda.is_available()):
-        return "cuda"
-    elif(torch.backends.mps.is_available()):
-        return "mps"
-    else:
-        return "cpu"
-
 def generate_image(prompt):
     model_id = "CompVis/stable-diffusion-v1-4" # "CompVis/stable-diffusion-v1-4", "stabilityai/stable-diffusion-2"
     num_inference_steps = 50
@@ -49,7 +49,7 @@ def generate_image(prompt):
     image_width = 1024
 
     print('Step 2: generating image... ⏳')
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True)
     pipe = pipe.to(get_device())
     pipe.enable_attention_slicing()
     # ? kwargs not reached
