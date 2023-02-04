@@ -25,17 +25,19 @@ def get_device():
         return "mps"
     else:
         return "cpu"
-
-def generate_prompt():
-    print('Step 1: generating image prompt... ⏳')
-    generator = pipeline('text-generation', model="mrm8488/bloom-560m-finetuned-sd-prompts")
+    
+def nature_scene_prompt_seed():
     scene_close_natural_feature_seeds = ["serene lake", "peaceful river bank", "tranquil island"]
     scene_manmade_structure_seeds = ["bridge", "cathedral", "skyscraper", "pagoda", "dome", "cabin", "amphitheatre", "hut", "tent", "greenhouse", "church", "mosque", "boat", "mansion", "treehouse", "altar", "temple", "ruin", "castle", "plane", "hot air balloon", "pyramid"]
     scene_setting = ["forest", "park"]
     scene_distant_natural_feature_seeds = ["mountains", "the moon", "stars", "the sun", "a city", "village"]
     prompt_seed = f"highly detailed matte oil painting of a {random.choice(scene_close_natural_feature_seeds)} with a {random.choice(scene_manmade_structure_seeds)} set in a verdant {random.choice(scene_setting)} with beautiful huge trees, an inspiring blue sky with impressive clouds and {random.choice(scene_distant_natural_feature_seeds)} in the distance"
-    prompt = generator(prompt_seed, max_length=77, num_return_sequences=1)
-    prompt = prompt[0]['generated_text']
+    return prompt_seed
+
+def generate_prompt():
+    print('Step 1: generating image prompt... ⏳')
+    generator = pipeline('text-generation', model="mrm8488/bloom-560m-finetuned-sd-prompts")
+    prompt = generator(nature_scene_prompt_seed(), max_length=77, num_return_sequences=1)[0]['generated_text']
     print(f"Done ✅")
     print(f"🗣️ Prompt: {prompt}")
     print("")
@@ -45,8 +47,8 @@ def generate_image(prompt):
     model_id = "CompVis/stable-diffusion-v1-4" # "CompVis/stable-diffusion-v1-4", "stabilityai/stable-diffusion-2"
     num_inference_steps = 75
     guidance_scale = 7.5 
-    image_height = 512
-    image_width = 768
+    image_height = 768
+    image_width = 1024
 
     print('Step 2: generating image... ⏳')
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True, cache_dir=os.getenv("cache_dir", "./models"))
@@ -98,5 +100,5 @@ def create_and_set_new_bg_image():
     print("NEW BG SET 🚀 ")
     print("")
 
-warnings.filterwarnings("ignore")
+# warnings.filterwarnings("ignore")
 create_and_set_new_bg_image()
