@@ -31,7 +31,7 @@ def nature_scene_prompt_seed():
     scene_manmade_structure_seeds = ["bridge", "cathedral", "skyscraper", "pagoda", "dome", "cabin", "amphitheatre", "hut", "tent", "greenhouse", "church", "mosque", "boat", "mansion", "treehouse", "altar", "temple", "ruin", "castle", "plane", "hot air balloon", "pyramid"]
     scene_setting = ["forest", "park"]
     scene_distant_natural_feature_seeds = ["mountains", "the moon", "stars", "the sun", "a city", "village"]
-    prompt_seed = f"highly detailed matte oil painting of a {random.choice(scene_close_natural_feature_seeds)} with a {random.choice(scene_manmade_structure_seeds)} set in a verdant {random.choice(scene_setting)} with beautiful huge trees, an inspiring blue sky with impressive clouds and {random.choice(scene_distant_natural_feature_seeds)} in the distance"
+    prompt_seed = f"highly detailed matte oil painting of a {random.choice(scene_close_natural_feature_seeds)} with a {random.choice(scene_manmade_structure_seeds)} set in a verdant {random.choice(scene_setting)} with beautiful huge trees, an inspiring big blue sky with impressive clouds and {random.choice(scene_distant_natural_feature_seeds)} in the distance"
     return prompt_seed
 
 def generate_prompt():
