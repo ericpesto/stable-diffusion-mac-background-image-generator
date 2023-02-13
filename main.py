@@ -17,6 +17,7 @@ from appscript import app, mactypes
 # windows support?
 # run from cli w/ a cmd?
 # try a different upscaling model
+# TRY NEW VERSION OF REALESGRAN, better mps support?
 
 def get_device():
     if(torch.cuda.is_available()):
@@ -45,10 +46,10 @@ def generate_prompt():
 
 def generate_image(prompt):
     model_id = "CompVis/stable-diffusion-v1-4" # "CompVis/stable-diffusion-v1-4", "stabilityai/stable-diffusion-2"
-    num_inference_steps = 75
+    num_inference_steps = 50
     guidance_scale = 7.5 
-    image_height = 768
-    image_width = 1024
+    image_height = 512
+    image_width = 768
 
     print('Step 2: generating image... ⏳')
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True, cache_dir=os.getenv("cache_dir", "./models"))
@@ -65,9 +66,10 @@ def generate_image(prompt):
 
 def upscale_image(image):
     print('Step 3: upscaling image... ⏳')
-    device = torch.device('cpu') # 'mps' is faster but creates visual glitches in the upscaled image
-    model = RealESRGAN(device, scale=4)
-    model.load_weights(f"weights/RealESRGAN_x4.pth", download=True)
+    scale = 8 # 2, 4, 8
+    device = torch.device(get_device()) # 'mps' is faster but creates visual glitches in the upscaled image
+    model = RealESRGAN(device, scale=scale)
+    model.load_weights(f"weights/RealESRGAN_x{scale}.pth", download=True,)
     upscaled_image = model.predict(image)
     print('Done ✅ ')
     print("")
