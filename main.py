@@ -69,7 +69,7 @@ def generate_image(prompt):
 def upscale_image(image):
     print('Step 3: upscaling image... ⏳')
     scale = 4 # 2, 4 (default), 8
-    device = torch.device('cpu ') # 'mps' is faster but creates visual glitches in the upscaled image
+    device = torch.device('cpu') # 'mps' is faster but creates visual glitches in the upscaled image
     model = RealESRGAN(device, scale=scale)
     model.load_weights(f"weights/RealESRGAN_x{scale}.pth", download=True)
     upscaled_image = model.predict(image)
