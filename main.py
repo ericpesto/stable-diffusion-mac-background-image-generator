@@ -11,6 +11,7 @@ from transformers import pipeline
 from RealESRGAN import RealESRGAN
 from appscript import app, mactypes
 
+
 # todo:
 # get laptop screen dimensions, are they divisible by 8?
 # put all functions in a utils file
@@ -48,13 +49,14 @@ def generate_image(prompt):
     model_id = "CompVis/stable-diffusion-v1-4" # "CompVis/stable-diffusion-v1-4", "stabilityai/stable-diffusion-2"
     num_inference_steps = 50
     guidance_scale = 7.5 
-    image_height = 512
-    image_width = 768
+    image_height = 768
+    image_width = 1024
 
     print('Step 2: generating image... ⏳')
     pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16, use_auth_token=True, cache_dir=os.getenv("cache_dir", "./models"))
     pipe = pipe.to(get_device())
     pipe.enable_attention_slicing()
+    pipe.enable_vae_slicing()
     # ? kwargs not reached
     pipe.safety_checker = lambda images, **kwargs: (images, False)
     # HuggingFace: This is a temporary workaround for a weird issue
@@ -66,10 +68,10 @@ def generate_image(prompt):
 
 def upscale_image(image):
     print('Step 3: upscaling image... ⏳')
-    scale = 8 # 2, 4, 8
-    device = torch.device(get_device()) # 'mps' is faster but creates visual glitches in the upscaled image
+    scale = 4 # 2, 4 (default), 8
+    device = torch.device('cpu ') # 'mps' is faster but creates visual glitches in the upscaled image
     model = RealESRGAN(device, scale=scale)
-    model.load_weights(f"weights/RealESRGAN_x{scale}.pth", download=True,)
+    model.load_weights(f"weights/RealESRGAN_x{scale}.pth", download=True)
     upscaled_image = model.predict(image)
     print('Done ✅ ')
     print("")
